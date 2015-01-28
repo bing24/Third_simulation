@@ -131,8 +131,8 @@ classdef ChargingRobot < handle
                 end
                 end
             end
-            atspMatrix(:,1)=0;
-            atspMatrix(1,:)=0;
+%             atspMatrix(:,1)=0;
+%             atspMatrix(1,:)=0;
             % Transform ATSP to TSP if needed
             %--------------------------------------------------------------------------
             
