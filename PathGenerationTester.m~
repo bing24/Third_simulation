@@ -1,0 +1,17 @@
+L_desire=2*pi;
+N=1000;
+n=15;
+nonrandbit=5+rand;
+randbit=1;
+t=linspace(0,2*pi,n);
+tt=linspace(0,2*pi,N);
+r=nonrandbit+randbit*randn(size(t));
+r(end)=r(1);
+rr=spline(t,[0 r 0],tt);
+x=rr.*cos(tt);
+y=rr.*sin(tt);
+L=sum(sqrt(diff(x).^2+diff(y).^2));
+x=L_desire/L*x;
+y=L_desire/L*y;
+plot(x,y)
+key=waitforbuttonpress;

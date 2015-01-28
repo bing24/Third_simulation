@@ -1,0 +1,51 @@
+clear all
+close all
+
+%% Define operating robots
+
+alpha=OperatingRobot;
+beta=OperatingRobot;
+gamma=OperatingRobot;
+
+alpha=setID(alpha,1);
+beta=setID(beta,2);
+
+gamma=setID(gamma,3);
+
+alpha=setTrajectory(alpha,'random1');
+beta=setTrajectory(beta,'random2');
+gamma=setTrajectory(gamma,'random3');
+
+alpha=configWindow(alpha, 0.2,0.8);
+beta=configWindow(beta, 0.3,0.9);
+gamma=configWindow(gamma, 0.1,0.7);
+
+% plotTrajectory(alpha)
+% hold on
+% plotTrajectory(beta)
+% plotTrajectory(gamma)
+
+%% Define charging robots
+med=ChargingRobot;
+setpos(med,1,1);
+setspeed(med,22
+);
+
+%% Run the simulation
+
+or.a=alpha;
+or.b=beta;
+or.c=gamma;
+
+
+
+plan(med,or,'LKH','Distance')
+
+
+plotTrajectory(alpha)
+hold on
+plotTrajectory(beta)
+plotTrajectory(gamma)
+plotTrajectory(med)
+
+
