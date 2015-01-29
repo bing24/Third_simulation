@@ -3,6 +3,7 @@ classdef Simulation < handle
 	properties
 		time_step
 		total_steps
+        total_time
         charging_time
 		list_of_operating_robots
 		list_of_charging_robots
@@ -13,7 +14,7 @@ classdef Simulation < handle
 		end
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		function setTimeStep(obj,time_step)
-			obj.time_step=time_step
+			obj.time_step=time_step;
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 		function setChargingTime(obj,chargingtime)
@@ -35,23 +36,30 @@ classdef Simulation < handle
 		end
 		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function setTotalSteps(obj)
-            max()
         for i=1:length(obj.list_of_operating_robots)
-            maxNumberSteps=ones()
-
-
-            obj.total_steps=obj.time_step*[1:length(obj.list_of_operating_robots(1).all_trajectory_x)];
-            for i=1:obj.
+            maxNumberSteps(i)=length(obj.list_of_operating_robots(i).all_trajectory_x);
+            maxNumberlaps(i)=obj.list_of_operating_robots(i).laps;
+        end
+            maxTotallaps=max(maxNumberlaps);
+            obj.total_steps=max(maxNumberSteps)+maxTotallaps*obj.charging_time;
+            obj.total_time=obj.time_step*[1:obj.total_steps];
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function setMeetingTime(obj)
+            
             for i=1:length(obj.list_of_operating_robots)
-                obj.list_of_operating_robots(i).charging(3,:)=zeros(1,length(obj.list_of_operating_robots.charging));
+                temp=[];
+                obj.list_of_operating_robots(i).charging(3,:)=zeros(1,length(obj.list_of_operating_robots(i).charging));
                 index=round(length(obj.list_of_operating_robots(i).trajectory_x)*obj.list_of_operating_robots(i).recharge_window_min_level);
                 indexs=round(length(obj.list_of_operating_robots(i).trajectory_x)*obj.list_of_operating_robots(i).recharge_window_max_level);
                 for j=1:obj.list_of_operating_robots(i).laps
-                obj.list_of_operating_robots(i).charging(3,1:)=obj.total_steps(index:indexs)
-
+                    eachChargingTime(j,:)=obj.total_time(length(obj.list_of_operating_robots(i).trajectory_x)*(j-1)+obj.charging_time*(j-1)+index: ...
+                        length(obj.list_of_operating_robots(i).trajectory_x)*(j-1)+obj.charging_time*(j-1)+indexs);
+                    temp=cat(2,temp,eachChargingTime(j,:));
+                end 
+                obj.list_of_operating_robots(i).charging(3,:)=temp;
+                end
+            end
 
             %for i=2:length(obj.charging)
                 %obj.charging(3,i)=obj.charging(3,i-1)+1;
