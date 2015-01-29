@@ -32,7 +32,7 @@ fclose(fid);
 tic;
 
 % run LKH solver
-!./LKH params.txt
+!LKH params.txt
 
 endTime = toc;
 disp('-------------------------------------------------------');

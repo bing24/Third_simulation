@@ -5,6 +5,8 @@ classdef Simulation < handle
 		total_steps
         total_time
         charging_time
+        chargingTrajectory_x
+        chargingTrajectory_y
 		list_of_operating_robots
 		list_of_charging_robots
 	end
@@ -69,12 +71,31 @@ classdef Simulation < handle
         function error=plan(obj,SOLVER,goal)
             error=0;
             %x and set
-            tempx=[obj.initial_x;map.a.charging(1,:)';map.b.charging(1,:)';map.c.charging(1,:)'];
-            tempy=[obj.initial_y;map.a.charging(2,:)';map.b.charging(2,:)';map.c.charging(2,:)'];
-            x = [tempx,tempy];
-            time=[0,map.a.charging(3,:),map.b.charging(3,:),map.c.charging(3,:)]';
-            set = [1;(map.a.id+1)*ones(length(map.a.charging),1); (map.b.id+1)*ones(length(map.b.charging),1); ...
-                (map.c.id+1)*ones(length(map.c.charging),1)];
+            set=[];
+            ChargingRobotx=[];
+            iter=0;
+            for i=1:length(obj.list_of_charging_robots)
+                temp=[obj.list_of_charging_robots(i).initial_x;obj.list_of_charging_robots(i).initial_y]; 
+                ChargingRobotx=cat(2,ChargingRobotx,temp);
+                set=cat(1,set,i);
+                iter=iter+1;
+            end
+            ChargingRobotx=ChargingRobotx';
+            OperatingRobotx=[];
+            tempSet=[];
+            time=zeros(length(obj.list_of_charging_robots),1);
+            for i=1:length(obj.list_of_operating_robots)
+                OperatingRobotx=cat(2,OperatingRobotx,obj.list_of_operating_robots(i).charging);
+                time=cat(1,time,obj.list_of_operating_robots(i).charging(3,:)');
+                for j=1:obj.list_of_operating_robots(i).laps
+                    iter=iter+1;
+                    tempSet=cat(1,tempSet,ones(length(obj.list_of_operating_robots(i).charging)/obj.list_of_operating_robots(i).laps,1)*iter);
+                end
+            end
+            OperatingRobotx=[OperatingRobotx(1,:)' OperatingRobotx(2,:)'];
+            
+            x=cat(1,ChargingRobotx,OperatingRobotx);
+            set=cat(1,set,tempSet);
             
             numCities = max(set);
             xSorted = [];
@@ -99,20 +120,16 @@ classdef Simulation < handle
             for i = 1:numElements
                 
                 for j = 1:numElements
-                    
                    
                     time_matrix(i,j) = timeSorted(j) - timeSorted(i);
                     vertices_distance = norm(xSorted(i,:) - xSorted(j,:));
                     
-                    
-                    
-                    if (vertices_distance/obj.max_speed<=time_matrix(i,j))
+                    if (vertices_distance/obj.list_of_charging_robots(1).max_speed<=time_matrix(i,j)+obj.charging_time)
                         A(i,j)=vertices_distance;
                     else
                         A(i,j)=nan;
                     end
                     
-                   
                 end
             end
                 
@@ -125,7 +142,7 @@ classdef Simulation < handle
                 for j = 1:numElements
                     
                     vertices_distance = norm(xSorted(i,:) - xSorted(j,:));
-                     if (vertices_distance/obj.max_speed<=timeSorted(i,:) - timeSorted(j,:))
+                     if (vertices_distance/obj.list_of_chargingRobots(1).max_speed<=timeSorted(i,:) - timeSorted(j,:))  %Need fix
                         A(i,j)=timeSorted(i,:) - timeSorted(j,:);
                     else
                         A(i,j)=nan;
@@ -137,8 +154,6 @@ classdef Simulation < handle
             else disp('Unknown Objective');
                 
             end
-            
-            
             
             % Transform GTSP to ATSP
             
@@ -154,10 +169,12 @@ classdef Simulation < handle
                 end
                 end
             end
-             atspMatrix(:,1)=0;
+            for i=1:length(obj.list_of_charging_robots)
+
+                atspMatrix(:,i)=0;
+            end
 
             % Transform ATSP to TSP if needed
-            
             
             if (strcmp(SOLVER,'LinKern'))
                 symtsp = atsp_to_tsp(atspMatrix, infcost);
@@ -201,13 +218,13 @@ classdef Simulation < handle
             
             % Solver Analysis
             
-                        for i=1:numCities
-            
-                            if (isempty(find(setsFound == i)))
-            
-                                setsNotFound = [setsNotFound i];
-                            end
-                        end
+%                         for i=1:numCities
+%             
+%                             if (isempty(find(setsFound == i)))
+%             
+%                                 setsNotFound = [setsNotFound i];
+%                             end
+%                         end
                         if (strcmp(goal,'Distance'))
                             meet=timeSorted(vertexSequenceFinal);
                             judge=[];
@@ -218,15 +235,13 @@ classdef Simulation < handle
                             disp('Route found. The meeting time:')
                             disp((meet(2:end)))
                             obj.meeting_times=meet;
-                            else disp((meet(2:end)))
+                            else disp(meet)
                                 disp('Mission impossible. Please speed up or assign more chargers.')
                                 error=1;
                             end
-                            
-                            
-                            
-                            obj.trajectory_x= xSorted(vertexSequenceFinal,1);
-                            obj.trajectory_y= xSorted(vertexSequenceFinal,2);
+
+                            obj.chargingTrajectory_x= xSorted(vertexSequenceFinal,1);
+                            obj.chargingTrajectory_y= xSorted(vertexSequenceFinal,2);
                         elseif (strcmp(goal,'Time'))
                             
                             
@@ -247,8 +262,9 @@ classdef Simulation < handle
                             end
                             
                            	
-                            obj.trajectory_x= xSorted(vertexSequenceFinal,1);
-                            obj.trajectory_y= xSorted(vertexSequenceFinal,2);
+                            obj.chargingTrajectory_x= xSorted(vertexSequenceFinal,1);
+                            obj.chargingTrajectory_y= xSorted(vertexSequenceFinal,2);
+
                         else
                             disp(' Cannot get result ');
                         end

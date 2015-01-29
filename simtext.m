@@ -5,20 +5,20 @@ choice='No';
 %% Add operating robots and charging robots using Simulation.m ID will be automatically assigned
 
 med=Simulation;
-addOperatingRobots(med,6);
-addChargingRobots(med,3);
+addOperatingRobots(med,3);
+addChargingRobots(med,1);
 
 %% Set trajectories and charging window of operating robots using OperatingRobot.m
 
 for i=1:length(med.list_of_operating_robots)
-	setTrajectory(med.list_of_operating_robots(i),'random',rand*10,rand*10,2);
+	setTrajectory(med.list_of_operating_robots(i),'random',rand*10,rand*10,1);
 	configWindow(med.list_of_operating_robots(i),0.7,0.95);
 end
 
 %% Set initial positions and speed of charging robots using ChargingRobot.m 
 for i=1:length(med.list_of_charging_robots)
 	setpos(med.list_of_charging_robots(i),5,i*3);
-	setspeed(med.list_of_charging_robots(i),2);
+	setspeed(med.list_of_charging_robots(i),10);
 end
 
 %% Set time step, meeting point time and charging time using Simulation.m
