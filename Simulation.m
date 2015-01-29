@@ -5,6 +5,7 @@ classdef Simulation < handle
 		total_steps
         total_time
         charging_time
+        meeting_time
         chargingTrajectory_x
         chargingTrajectory_y
 		list_of_operating_robots
@@ -226,19 +227,20 @@ classdef Simulation < handle
 %                             end
 %                         end
                         if (strcmp(goal,'Distance'))
-                            meet=timeSorted(vertexSequenceFinal);
-                            judge=[];
-                            for i=1:length(meet)-1
-                                judge(i)=max(meet(i:i+1))~=meet(i+1);
-                            end
-                            if sum(judge)==0;
-                            disp('Route found. The meeting time:')
-                            disp((meet(2:end)))
-                            obj.meeting_times=meet;
-                            else disp(meet)
-                                disp('Mission impossible. Please speed up or assign more chargers.')
-                                error=1;
-                            end
+                            obj.meeting_time=timeSorted(vertexSequenceFinal);
+%                             judge=[];
+%                             for i=1:length(meet)-1
+%                                 judge(i)=max(meet(i:i+1))~=meet(i+1);
+%                             end
+%                             if sum(judge)==0;
+                              disp('Route found. The meeting time:')
+%                             disp((meet(2:end)))
+%                             obj.meeting_times=meet;
+%                             else disp(meet)
+%                                 disp('Mission impossible. Please speed up or assign more chargers.')
+%                                 error=1;
+%                             end
+                            disp(obj.meeting_time)
 
                             obj.chargingTrajectory_x= xSorted(vertexSequenceFinal,1);
                             obj.chargingTrajectory_y= xSorted(vertexSequenceFinal,2);
@@ -273,12 +275,20 @@ classdef Simulation < handle
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function plotMap(obj)
-            plot(obj.chargingTrajectory_x,obj.chargingTrajectory_y)
+           
+            index=find(obj.meeting_time==0)
             hold on
+            for i=1:length(index)
+                if i==length(index)
+                    plot(obj.chargingTrajectory_x(index(i):end),obj.chargingTrajectory_y(index(i):end),'c--')
+                else
+                    plot(obj.chargingTrajectory_x(index(i):index(i+1)-1),obj.chargingTrajectory_y(index(i):index(i+1)-1),'m--')
+                end
+            end
             for i=1:length(obj.list_of_operating_robots)
                 plotTrajectory(obj.list_of_operating_robots(i))
             end
-            scatter(med.chargingTrajectory_x,med.chargingTrajectory_y)
+            scatter(obj.chargingTrajectory_x,obj.chargingTrajectory_y,'g')
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         

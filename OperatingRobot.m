@@ -64,7 +64,6 @@ classdef OperatingRobot <handle
                 obj.all_trajectory_x=repmat(obj.trajectory_x,1,obj.laps);
                 obj.all_trajectory_y=repmat(obj.trajectory_y,1,obj.laps);
 
-            
                 %Generate random initial position and current position
                 indexes = ceil(length(obj.trajectory_x)*rand); 
                 indexes=1;
@@ -84,10 +83,11 @@ classdef OperatingRobot <handle
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function plotTrajectory(obj)
-            plot(obj.trajectory_x,obj.trajectory_y,'LineWidth',3)
+            
+            plot(obj.trajectory_x,obj.trajectory_y,'b.','LineWidth',1)
             hold on
             %Configure the charging window before plot command
-            plot(obj.charging(1,:),obj.charging(2,:),'m','LineWidth',5)
+            plot(obj.charging(1,1:end/obj.laps),obj.charging(2,1:end/obj.laps),'r.','LineWidth',1)
             
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -98,14 +98,7 @@ classdef OperatingRobot <handle
             index=round(length(obj.trajectory_x)*min);
             indexs=round(length(obj.trajectory_x)*max);
             obj.charging=repmat([obj.trajectory_x(index:indexs);obj.trajectory_y(index:indexs)],1,obj.laps);
-            %obj.charging(3,:)=zeros(1,length(obj.charging)); %
-            %obj.charging(3,1)=round(index);  % Needs to be fixed 
-
-
-            %for i=2:length(obj.charging)
-                %obj.charging(3,i)=obj.charging(3,i-1)+1;
-            %end
-            
+                      
         end
         
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
