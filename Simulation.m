@@ -124,7 +124,7 @@ classdef Simulation < handle
                     time_matrix(i,j) = timeSorted(j) - timeSorted(i);
                     vertices_distance = norm(xSorted(i,:) - xSorted(j,:));
                     
-                    if (vertices_distance/obj.list_of_charging_robots(1).max_speed<=time_matrix(i,j)+obj.charging_time)
+                    if (vertices_distance/obj.list_of_charging_robots(1).max_speed+obj.charging_time<=time_matrix(i,j))
                         A(i,j)=vertices_distance;
                     else
                         A(i,j)=nan;
