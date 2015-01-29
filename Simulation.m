@@ -272,6 +272,15 @@ classdef Simulation < handle
                           
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        function plotMap(obj)
+            plot(obj.chargingTrajectory_x,obj.chargingTrajectory_y)
+            hold on
+            for i=1:length(obj.list_of_operating_robots)
+                plotTrajectory(obj.list_of_operating_robots(i))
+            end
+            scatter(med.chargingTrajectory_x,med.chargingTrajectory_y)
+        end
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         
 		function simStep(obj)
