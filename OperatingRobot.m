@@ -65,13 +65,13 @@ classdef OperatingRobot <handle
                 obj.all_trajectory_y=repmat(obj.trajectory_y,1,obj.laps);
 
                 %Generate random initial position and current position
-                indexes = ceil(length(obj.trajectory_x)*rand); 
-                indexes=1;
-                obj.initial_x=obj.trajectory_x(indexes);
-                obj.initial_y=obj.trajectory_y(indexes);
-                indexes = ceil(length(obj.trajectory_x)*rand);
-                obj.current_x=obj.trajectory_x(indexes);
-                obj.current_y=obj.trajectory_y(indexes);
+                % indexes = ceil(length(obj.trajectory_x)*rand); 
+                % indexes=1;
+                obj.initial_x=obj.trajectory_x(1);
+                obj.initial_y=obj.trajectory_y(1);
+                % indexes = ceil(length(obj.trajectory_x)*rand);
+                % obj.current_x=obj.trajectory_x(indexes);
+                % obj.current_y=obj.trajectory_y(indexes);
                 else 
                     disp('Too many inputs')
                 end
@@ -88,6 +88,10 @@ classdef OperatingRobot <handle
             hold on
             %Configure the charging window before plot command
             plot(obj.charging(1,1:end/obj.laps),obj.charging(2,1:end/obj.laps),'r.','LineWidth',1)
+            scatter(obj.initial_x,obj.initial_y,'k')
+            workerimage=imread('test.jpg');
+            workerimage=imresize(workerimage,.3/length(workerimage));
+            image(obj.initial_x,obj.initial_y,workerimage);
             
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

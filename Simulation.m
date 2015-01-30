@@ -276,7 +276,7 @@ classdef Simulation < handle
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function plotMap(obj)
            
-            index=find(obj.meeting_time==0)
+            index=find(obj.meeting_time==0);
             hold on
             for i=1:length(index)
                 if i==length(index)
@@ -289,6 +289,7 @@ classdef Simulation < handle
                 plotTrajectory(obj.list_of_operating_robots(i))
             end
             scatter(obj.chargingTrajectory_x,obj.chargingTrajectory_y,'g')
+
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         

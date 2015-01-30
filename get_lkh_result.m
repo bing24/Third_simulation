@@ -8,7 +8,7 @@ fprintf(fidparam, 'OUTPUT_TOUR_FILE = lkhTSPoutput.out\n');
 fprintf(fidparam, 'KICKS = 200\n');
 fprintf(fidparam, 'KICK_TYPE = 6\n');
 fprintf(fidparam, 'INITIAL_TOUR_ALGORITHM = NEAREST-NEIGHBOR\n');
-
+fprintf(fidparam, 'RUNS = 3\n');
 
 %creating the input file for LKH
 

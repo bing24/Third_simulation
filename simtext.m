@@ -18,7 +18,7 @@ end
 %% Set initial positions and speed of charging robots using ChargingRobot.m 
 for i=1:length(med.list_of_charging_robots)
 	setpos(med.list_of_charging_robots(i),5,i*3);
-	setspeed(med.list_of_charging_robots(i),5);
+	setspeed(med.list_of_charging_robots(i),1);
 end
 
 %% Set time step, meeting point time and charging time using Simulation.m
@@ -33,11 +33,6 @@ setMeetingTime(med);
 plan(med,'LKH','Distance');
 plotMap(med);
 %% Make the video
-
-er=plan(med,or,'LKH','Distance')
-if er==1
-	return
-end
 
 dlg_string = sprintf('Do you want to record a video of results?\n\nThe name of the file will be the current date and time and it will be saved in the same directory.');
 %choice=questdlg(dlg_string,'Video Recording','Yes','No','Cancel','No');
@@ -57,11 +52,11 @@ if recordBool
 end
 
 FigHandle=figure(1);
-plotTrajectory(alpha)
+% plotTrajectory(alpha)
 hold on
-plotTrajectory(beta)
-plotTrajectory(gamma)
-plotTrajectory(med)
+% plotTrajectory(beta)
+% plotTrajectory(gamma)
+% plotTrajectory(med)
 
 t=1;
 simulation_time=100;
