@@ -276,17 +276,7 @@ classdef Simulation < handle
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function plotMap(obj,time)
            
-            for i=1:length(obj.list_of_operating_robots)
-                obj.list_of_operating_robots.(1).plotOperating(time)
-                
-                
-            end
-            
-            for i=1:length(obj.list_of_chargig_robots)
-                obj.list_of_charging_robots.(1).plotcharging(time,xs,ys)
-                
-                
-            end
+            for
             
             
             

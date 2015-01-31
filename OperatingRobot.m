@@ -84,15 +84,23 @@ classdef OperatingRobot <handle
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function plotTrajectory(obj)
             
-            plot(obj.trajectory_x,obj.trajectory_y,'b.','LineWidth',1)
+            plot(obj.trajectory_x*100,obj.trajectory_y*100,'b','LineWidth',1)
             hold on
             %Configure the charging window before plot command
-            plot(obj.charging(1,1:end/obj.laps),obj.charging(2,1:end/obj.laps),'r.','LineWidth',1)
-            scatter(obj.initial_x,obj.initial_y,'k')
-            workerimage=imread('test.jpg');
-            workerimage=imresize(workerimage,.3/length(workerimage));
-            image(obj.initial_x,obj.initial_y,workerimage);
-            
+            plot(obj.charging(1,1:end/obj.laps)*100,obj.charging(2,1:end/obj.laps)*100,'r','LineWidth',1)
+            scatter(obj.initial_x*100,obj.initial_y*100,'k')
+            [workerimage,~,alpha]=imread('or.png');
+            workerimage=imresize(workerimage,0.5);
+            alpha=imresize(alpha,0.5);
+            p1=[obj.trajectory_x(1) obj.trajectory_y(1)];
+            p2=[obj.trajectory_x(2) obj.trajectory_y(2)];
+            sita = atan2(p2(2)-p1(2),p2(1)-p1(1))*180/pi+20;
+
+            workerrotate=imrotate(workerimage,-sita);
+            alpharotate=imrotate(alpha,-sita);
+            image_center=size(workerrotate)/2;
+            bigimage=image(obj.initial_x*100-image_center(2),obj.initial_y*100-image_center(1),workerrotate);
+            set(bigimage,'AlphaData',alpharotate);
         end
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         function configWindow(obj,min,max)
